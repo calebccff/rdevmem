@@ -5,10 +5,11 @@ deps = [
 
 src = [
     'rdevmem.c',
+    'librdevmem.c',
 ]
 
 executable('rdevmem', src,
-    include_directories: ['.'],
     dependencies: deps,
+    link_args: ['-static', '-static-libgcc'],
     install: true)
 

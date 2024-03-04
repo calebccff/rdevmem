@@ -201,10 +201,11 @@ nettransfer() {
 }
 
 # ----- Development Directories ----- #
+MUSSELDIR="$(cd -- $(dirname -- "$0") && pwd)"
 CURDIR="$PWD"
 SRCDIR="$CURDIR/sources"
 BLDDIR="$CURDIR/builds"
-PCHDIR="$CURDIR/patches"
+PCHDIR="$MUSSELDIR/patches"
 
 MPREFIX="$CURDIR/toolchain"
 MSYSROOT="$CURDIR/sysroot"

@@ -1,0 +1,51 @@
+#!/bin/sh -e
+
+XARCH=""
+
+check_xarch() {
+	if [ ! -f "mussel/meson/meson.cross.$XARCH" ]; then
+		echo "Invalid cross architecture! Available architectures:"
+		cd mussel/meson
+		ls meson.cross.* | sed 's/meson.cross./    * /'
+		exit 1
+	fi
+
+	if [ ! -f "toolchain/bin/$XARCH-linux-musl-gcc" ]; then
+		echo "Toolchain for $XARCH not found! Please run mussel.sh first"
+		exit 1
+	fi
+}
+
+if [ "$1" = "-a" ]; then
+	XARCH="$2"
+	shift 2
+	check_xarch
+fi
+
+export PATH="$PWD/toolchain/bin:$PATH"
+
+SUBCMD="$1"
+shift 1
+
+case "$SUBCMD" in
+"setup")
+	if [ -z "$XARCH" ]; then
+		echo "Usage: ./meson-cross -a <arch> setup <meson args>"
+		exit 1
+	fi
+	exec meson setup \
+		--cross-file mussel/meson/meson.cross.$XARCH \
+		--strip \
+		-Db_pie=true \
+		-Db_lto=true \
+		-Db_lto_mode=thin \
+		$@
+	;;
+*)
+	if [ -n "$XARCH" ]; then
+		echo "Arch should only be specified for 'setup' subcommand"
+		exit 1
+	fi
+	exec meson $SUBCMD "$@"
+	;;
+esac

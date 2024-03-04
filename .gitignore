@@ -1,0 +1,8 @@
+build/
+
+# mussel stuff
+log.txt
+builds/
+sources/
+sysroot/
+toolchain/
